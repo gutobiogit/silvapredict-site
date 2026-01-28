@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SilvaPred - Predição Florestal Inteligente</title>
+    <meta name="description" content="Plataforma de predição florestal baseada em modelo fisiológico 3-PG. Explicável, precisa e independente.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --forest-dark: #1B4332;
+            --forest-medium: #2D6A4F;
+            --forest-light: #52B788;
+            --accent-gold: #D4AF37;
+            --background: #FAFDF9;
+            --text-dark: #1A1A1A;
+            --text-light: #4A4A4A;
+            --cream: #F8F6F1;
+        }
+        
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+            color: var(--text-dark);
+            background: var(--background);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1B4332 0%, #2D6A4F 50%, #40916C 100%);
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(82, 183, 136, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 2rem;
+            max-width: 1200px;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            color: white;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .logo span {
+            color: var(--accent-gold);
+        }
+        
+        .tagline {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: rgba(255,255,255,0.95);
+            font-weight: 300;
+            margin-bottom: 3rem;
+            letter-spacing: 0.02em;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: var(--accent-gold);
+            color: var(--forest-dark);
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(212, 175, 55, 0.6);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-secondary:hover {
+            background: white;
+            color: var(--forest-dark);
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(27, 67, 50, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent-gold);
+        }
+        
+        /* Sections */
+        section {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            color: var(--forest-dark);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .section-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            text-align: center;
+            margin-bottom: 4rem;
+            font-weight: 300;
+        }
+        
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-top: 4rem;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(82, 183, 136, 0.1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(82, 183, 136, 0.15);
+        }
+        
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+        
+        .feature-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--forest-dark);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-description {
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+        
+        /* Comparison Section */
+        .comparison {
+            background: var(--cream);
+            padding: 6rem 2rem;
+        }
+        
+        .comparison-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+        
+        .comparison-side {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+        }
+        
+        .comparison-side.old {
+            border: 3px solid #E57373;
+        }
+        
+        .comparison-side.new {
+            border: 3px solid var(--forest-light);
+            position: relative;
+        }
+        
+        .comparison-side.new::before {
+            content: '⭐ RECOMENDADO';
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: var(--accent-gold);
+            color: var(--forest-dark);
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .comparison-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--forest-dark);
+        }
+        
+        .comparison-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.02);
+        }
+        
+        .comparison-icon {
+            font-size: 1.5rem;
+            min-width: 30px;
+        }
+        
+        /* Stats */
+        .stats {
+            background: var(--forest-dark);
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 3rem auto 0;
+        }
+        
+        .stat-item {
+            padding: 2rem;
+        }
+        
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.9);
+            font-weight: 300;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--forest-medium) 0%, var(--forest-dark) 100%);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+        
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cta-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-text {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--forest-dark);
+            color: white;
+            padding: 4rem 2rem 2rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-gold);
+        }
+        
+        .copyright {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-logo">SilvaPred</div>
+        <ul class="nav-links">
+            <li><a href="#solucao">Solução</a></li>
+            <li><a href="#vantagens">Vantagens</a></li>
+            <li><a href="#comparacao">Comparação</a></li>
+            <li><a href="#contato">Contato</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="logo">Silva<span>Pred</span></h1>
+            <p class="tagline">Predição Florestal Inteligente</p>
+            <p style="color: rgba(255,255,255,0.9); font-size: 1.2rem; margin-bottom: 2rem; max-width: 700px; margin-left: auto; margin-right: auto;">
+                Plataforma baseada em modelo fisiológico 3-PG que explica O QUÊ limita crescimento e simula cenários climáticos
+            </p>
+            <div class="cta-buttons">
+                <a href="#contato" class="btn btn-primary">POC Gratuito</a>
+                <a href="#solucao" class="btn btn-secondary">Saiba Mais</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Overview -->
+    <section id="solucao">
+        <h2 class="section-title fade-in">Nossa Solução</h2>
+        <p class="section-subtitle fade-in">Tecnologia que transforma dados em decisões</p>
+        
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <span class="feature-icon">💡</span>
+                <h3 class="feature-title">Explicável</h3>
+                <p class="feature-description">
+                    Mostra exatamente O QUE limita o crescimento: água, luz ou nutrientes. 
+                    Não apenas prevê resultados, explica as causas.
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <span class="feature-icon">🌦️</span>
+                <h3 class="feature-title">Cenários Climáticos</h3>
+                <p class="feature-description">
+                    Simule clima seco, favorável e mudança climática. 
+                    Responda "e se...?" antes de tomar decisões.
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <span class="feature-icon">🔓</span>
+                <h3 class="feature-title">Independente</h3>
+                <p class="feature-description">
+                    100% dados públicos (ERA5, Sentinel, SoilGrids). 
+                    Zero lock-in comercial. Código auditável.
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <span class="feature-icon">📊</span>
+                <h3 class="feature-title">Modelo 3-PG</h3>
+                <p class="feature-description">
+                    Fisiológico, não estatístico. Validado cientificamente há 30+ anos. 
+                    Confiável para decisões estratégicas.
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <span class="feature-icon">⚡</span>
+                <h3 class="feature-title">Automatizado</h3>
+                <p class="feature-description">
+                    Pipeline completo sem trabalho manual. 
+                    Escala de 1 a 10.000 talhões com mesma eficiência.
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <span class="feature-icon">🎯</span>
+                <h3 class="feature-title">Resultados Práticos</h3>
+                <p class="feature-description">
+                    Relatórios executivos, dashboards interativos e dados exportáveis. 
+                    Pronto para usar em 2-3 semanas.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats">
+        <h2 style="font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 1rem;">
+            Por que SilvaPred?
+        </h2>
+        <div class="stats-grid">
+            <div class="stat-item fade-in">
+                <div class="stat-number">-60%</div>
+                <div class="stat-label">Custo vs. sistemas tradicionais</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Dados públicos • Zero dependência</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number">30+</div>
+                <div class="stat-label">Anos de validação científica do 3-PG</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison -->
+    <section id="comparacao" class="comparison">
+        <div class="comparison-container">
+            <h2 class="section-title fade-in">Comparação Direta</h2>
+            <p class="section-subtitle fade-in">Como nos diferenciamos dos sistemas existentes</p>
+            
+            <div class="comparison-grid">
+                <div class="comparison-side old fade-in">
+                    <h3 class="comparison-title">❌ Sistemas Tradicionais</h3>
+                    
+                    <div class="comparison-item">
+                        <span class="comparison-icon">📊</span>
+                        <div>
+                            <strong>Planilhas Excel</strong><br>
+                            Trabalho manual, curvas fixas, sem cenários
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-item">
+                        <span class="comparison-icon">📈</span>
+                        <div>
+                            <strong>Software SIS (Embrapa)</strong><br>
+                            Dizem "quanto", não "por quê"
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-item">
+                        <span class="comparison-icon">💼</span>
+                        <div>
+                            <strong>ERPs (SAP, TOTVS)</strong><br>
+                            Lock-in caro, caixa preta
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-item">
+                        <span class="comparison-icon">⚠️</span>
+                        <div>
+                            <strong>Resultado</strong><br>
+                            Decisões sem explicação, risco climático ignorado
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="comparison-side new fade-in">
+                    <h3 class="comparison-title">✅ SilvaPred</h3>
+                    
+                    <div class="comparison-item">
+                        <span class="comparison-icon">💡</span>
+                        <div>
+                            <strong>Explicabilidade Total</strong><br>
+                            Identifica limitações (água, luz, solo)
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-item">
+                        <span class="comparison-icon">🌦️</span>
+                        <div>
+                            <strong>Cenários Nativos</strong><br>
+                            Seco, favorável, mudança climática
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-item">
+                        <span class="comparison-icon">🔓</span>
+                        <div>
+                            <strong>Zero Lock-in</strong><br>
+                            Dados públicos, código auditável
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-item">
+                        <span class="comparison-icon">✅</span>
+                        <div>
+                            <strong>Resultado</strong><br>
+                            Decisões embasadas, risco quantificado
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="contato" class="cta-section">
+        <div class="cta-content">
+            <h2 class="cta-title">Teste Gratuitamente</h2>
+            <p class="cta-text">
+                POC sem custo para 1-2 talhões da sua empresa.<br>
+                Relatório completo em 30 dias. Zero compromisso.
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center;">
+                <a href="mailto:contato@silvapred.com.br" class="btn btn-primary" style="font-size: 1.2rem; padding: 1.2rem 3rem;">
+                    📧 Solicitar POC Gratuito
+                </a>
+                <p style="opacity: 0.8; font-size: 0.95rem;">
+                    Ou entre em contato: contato@silvapred.com.br
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">SilvaPred</div>
+            <p style="opacity: 0.8; margin-bottom: 2rem;">Predição Florestal Inteligente</p>
+            
+            <div class="footer-links">
+                <a href="#solucao">Solução</a>
+                <a href="#vantagens">Vantagens</a>
+                <a href="#comparacao">Comparação</a>
+                <a href="mailto:contato@silvapred.com.br">Contato</a>
+            </div>
+            
+            <div class="copyright">
+                © 2025 SilvaPred. Todos os direitos reservados.<br>
+                silvapred.com.br | silvapred.com
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll Animation Script -->
+    <script>
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+        
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
