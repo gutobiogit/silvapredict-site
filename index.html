@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SilvaPredict - Predição Florestal Inteligente</title>
-    <meta name="description" content="Plataforma de predição florestal baseada em modelo fisiológico 3-PG. Explicável, precisa e independente.">
+    <title>SilvaPredict - Forest Prediction Intelligence</title>
+    <meta name="description" content="Forest prediction platform based on physiological 3-PG model. Explainable, accurate and independent.">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,6 +35,40 @@
             background: var(--background);
             line-height: 1.6;
             overflow-x: hidden;
+        }
+        
+        /* Language Switcher */
+        .lang-switcher {
+            position: fixed;
+            top: 80px;
+            right: 2rem;
+            z-index: 999;
+            display: flex;
+            gap: 0.5rem;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .lang-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            color: var(--text-light);
+            cursor: pointer;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .lang-btn.active {
+            background: var(--forest-dark);
+            color: white;
+        }
+        
+        .lang-btn:hover:not(.active) {
+            background: var(--cream);
         }
         
         /* Animated Background */
@@ -289,7 +323,6 @@
         }
         
         .comparison-side.new::before {
-            content: '⭐ RECOMENDADO';
             position: absolute;
             top: -15px;
             right: 20px;
@@ -441,6 +474,11 @@
             .features-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .lang-switcher {
+                top: 70px;
+                right: 1rem;
+            }
         }
         
         /* Scroll animations */
@@ -454,17 +492,40 @@
             opacity: 1;
             transform: translateY(0);
         }
+        
+        /* Hide content by default */
+        [data-lang] {
+            display: none;
+        }
+        
+        [data-lang].active {
+            display: inline;
+        }
+        
+        [data-lang-block] {
+            display: none;
+        }
+        
+        [data-lang-block].active {
+            display: block;
+        }
     </style>
 </head>
 <body>
+    <!-- Language Switcher -->
+    <div class="lang-switcher">
+        <button class="lang-btn" onclick="setLanguage('pt')" id="btn-pt">🇧🇷 PT</button>
+        <button class="lang-btn" onclick="setLanguage('en')" id="btn-en">🇺🇸 EN</button>
+    </div>
+
     <!-- Navigation -->
     <nav>
         <div class="nav-logo">SilvaPredict</div>
         <ul class="nav-links">
-            <li><a href="#solucao">Solução</a></li>
-            <li><a href="#vantagens">Vantagens</a></li>
-            <li><a href="#comparacao">Comparação</a></li>
-            <li><a href="#contato">Contato</a></li>
+            <li><a href="#solucao"><span data-lang="pt">Solução</span><span data-lang="en">Solution</span></a></li>
+            <li><a href="#vantagens"><span data-lang="pt">Vantagens</span><span data-lang="en">Advantages</span></a></li>
+            <li><a href="#comparacao"><span data-lang="pt">Comparação</span><span data-lang="en">Comparison</span></a></li>
+            <li><a href="#contato"><span data-lang="pt">Contato</span><span data-lang="en">Contact</span></a></li>
         </ul>
     </nav>
 
@@ -472,96 +533,140 @@
     <section class="hero">
         <div class="hero-content">
             <h1 class="logo">Silva<span>Predict</span></h1>
-            <p class="tagline">Predição Florestal Inteligente</p>
+            <p class="tagline">
+                <span data-lang="pt">Predição Florestal Inteligente</span>
+                <span data-lang="en">Forest Prediction Intelligence</span>
+            </p>
             <p style="color: rgba(255,255,255,0.9); font-size: 1.2rem; margin-bottom: 2rem; max-width: 700px; margin-left: auto; margin-right: auto;">
-                Plataforma baseada em modelo fisiológico 3-PG que explica O QUÊ limita crescimento e simula cenários climáticos
+                <span data-lang="pt">Plataforma baseada em modelo fisiológico 3-PG que explica O QUÊ limita crescimento e simula cenários climáticos</span>
+                <span data-lang="en">Platform based on physiological 3-PG model that explains WHAT limits growth and simulates climate scenarios</span>
             </p>
             <div class="cta-buttons">
-                <a href="#contato" class="btn btn-primary">TESTE Gratuito</a>
-                <a href="#solucao" class="btn btn-secondary">Saiba Mais</a>
+                <a href="#contato" class="btn btn-primary">
+                    <span data-lang="pt">Teste Gratuito</span>
+                    <span data-lang="en">Free Trial</span>
+                </a>
+                <a href="#solucao" class="btn btn-secondary">
+                    <span data-lang="pt">Saiba Mais</span>
+                    <span data-lang="en">Learn More</span>
+                </a>
             </div>
         </div>
     </section>
 
     <!-- Solution Overview -->
     <section id="solucao">
-        <h2 class="section-title fade-in">Nossa Solução</h2>
-        <p class="section-subtitle fade-in">Tecnologia que transforma dados em decisões</p>
+        <h2 class="section-title fade-in">
+            <span data-lang="pt">Nossa Solução</span>
+            <span data-lang="en">Our Solution</span>
+        </h2>
+        <p class="section-subtitle fade-in">
+            <span data-lang="pt">Tecnologia que transforma dados em decisões</span>
+            <span data-lang="en">Technology that transforms data into decisions</span>
+        </p>
         
         <div class="features-grid">
             <div class="feature-card fade-in">
                 <span class="feature-icon">💡</span>
-                <h3 class="feature-title">Explicável</h3>
+                <h3 class="feature-title">
+                    <span data-lang="pt">Explicável</span>
+                    <span data-lang="en">Explainable</span>
+                </h3>
                 <p class="feature-description">
-                    Mostra exatamente O QUE limita o crescimento: água, luz ou nutrientes. 
-                    Não apenas prevê resultados, explica as causas.
+                    <span data-lang="pt">Mostra exatamente O QUE limita o crescimento: água, luz ou nutrientes. Não apenas prevê resultados, explica as causas.</span>
+                    <span data-lang="en">Shows exactly WHAT limits growth: water, light or nutrients. Doesn't just predict results, explains the causes.</span>
                 </p>
             </div>
             
             <div class="feature-card fade-in">
                 <span class="feature-icon">🌦️</span>
-                <h3 class="feature-title">Cenários Climáticos</h3>
+                <h3 class="feature-title">
+                    <span data-lang="pt">Cenários Climáticos</span>
+                    <span data-lang="en">Climate Scenarios</span>
+                </h3>
                 <p class="feature-description">
-                    Simule clima seco, favorável e mudança climática. 
-                    Responda "e se...?" antes de tomar decisões.
+                    <span data-lang="pt">Simule clima seco, favorável e mudança climática. Responda "e se...?" antes de tomar decisões.</span>
+                    <span data-lang="en">Simulate dry, favorable climate and climate change. Answer "what if...?" before making decisions.</span>
                 </p>
             </div>
             
             <div class="feature-card fade-in">
                 <span class="feature-icon">🔓</span>
-                <h3 class="feature-title">Independente</h3>
+                <h3 class="feature-title">
+                    <span data-lang="pt">Independente</span>
+                    <span data-lang="en">Independent</span>
+                </h3>
                 <p class="feature-description">
-                    100% dados públicos (ERA5, Sentinel, SoilGrids). 
-                    Zero lock-in comercial. Código auditável.
+                    <span data-lang="pt">100% dados públicos (ERA5, Sentinel, SoilGrids). Zero lock-in comercial. Código auditável.</span>
+                    <span data-lang="en">100% public data (ERA5, Sentinel, SoilGrids). Zero commercial lock-in. Auditable code.</span>
                 </p>
             </div>
             
             <div class="feature-card fade-in">
                 <span class="feature-icon">📊</span>
-                <h3 class="feature-title">Modelo 3-PG</h3>
+                <h3 class="feature-title">
+                    <span data-lang="pt">Modelo 3-PG</span>
+                    <span data-lang="en">3-PG Model</span>
+                </h3>
                 <p class="feature-description">
-                    Fisiológico, não estatístico. Validado cientificamente há 30+ anos. 
-                    Confiável para decisões estratégicas.
+                    <span data-lang="pt">Fisiológico, não estatístico. Validado cientificamente há 30+ anos. Confiável para decisões estratégicas.</span>
+                    <span data-lang="en">Physiological, not statistical. Scientifically validated for 30+ years. Reliable for strategic decisions.</span>
                 </p>
             </div>
             
             <div class="feature-card fade-in">
                 <span class="feature-icon">⚡</span>
-                <h3 class="feature-title">Automatizado</h3>
+                <h3 class="feature-title">
+                    <span data-lang="pt">Automatizado</span>
+                    <span data-lang="en">Automated</span>
+                </h3>
                 <p class="feature-description">
-                    Pipeline completo sem trabalho manual. 
-                    Escala de 1 a 10.000 talhões com mesma eficiência.
+                    <span data-lang="pt">Pipeline completo sem trabalho manual. Escala de 1 a 10.000 talhões com mesma eficiência.</span>
+                    <span data-lang="en">Complete pipeline without manual work. Scales from 1 to 10,000 stands with same efficiency.</span>
                 </p>
             </div>
             
             <div class="feature-card fade-in">
                 <span class="feature-icon">🎯</span>
-                <h3 class="feature-title">Resultados Práticos</h3>
+                <h3 class="feature-title">
+                    <span data-lang="pt">Resultados Práticos</span>
+                    <span data-lang="en">Practical Results</span>
+                </h3>
                 <p class="feature-description">
-                    Relatórios executivos, dashboards interativos e dados exportáveis. 
-                    Pronto para usar em 2-3 semanas.
+                    <span data-lang="pt">Relatórios executivos, dashboards interativos e dados exportáveis. Pronto para usar em 2-3 semanas.</span>
+                    <span data-lang="en">Executive reports, interactive dashboards and exportable data. Ready to use in 2-3 weeks.</span>
                 </p>
             </div>
         </div>
     </section>
 
     <!-- Stats -->
-    <section class="stats">
+    <section class="stats" id="vantagens">
         <h2 style="font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 1rem;">
-            Por que SilvaPredict?
+            <span data-lang="pt">Por que SilvaPredict?</span>
+            <span data-lang="en">Why SilvaPredict?</span>
         </h2>
         <div class="stats-grid">
             <div class="stat-item fade-in">
                 <div class="stat-number">-60%</div>
-                <div class="stat-label">Custo vs. sistemas tradicionais</div>
+                <div class="stat-label">
+                    <span data-lang="pt">Custo vs. sistemas tradicionais</span>
+                    <span data-lang="en">Cost vs. traditional systems</span>
+                </div>
             </div>
             <div class="stat-item fade-in">
                 <div class="stat-number">100%</div>
-                <div class="stat-label">Dados públicos • Zero dependência</div>
+                <div class="stat-label">
+                    <span data-lang="pt">Dados públicos • Zero dependência</span>
+                    <span data-lang="en">Public data • Zero dependency</span>
+                </div>
             </div>
             <div class="stat-item fade-in">
                 <div class="stat-number">30+</div>
-                <div class="stat-label">Anos de validação científica do 3-PG</div>
+                <div class="stat-label">
+                    <span data-lang="pt">Anos de validação científica do 3-PG</span>
+                    <span data-lang="en">Years of 3-PG scientific validation</span>
+                </div>
             </div>
         </div>
     </section>
@@ -569,42 +674,67 @@
     <!-- Comparison -->
     <section id="comparacao" class="comparison">
         <div class="comparison-container">
-            <h2 class="section-title fade-in">Comparação Direta</h2>
-            <p class="section-subtitle fade-in">Como nos diferenciamos dos sistemas existentes</p>
+            <h2 class="section-title fade-in">
+                <span data-lang="pt">Comparação Direta</span>
+                <span data-lang="en">Direct Comparison</span>
+            </h2>
+            <p class="section-subtitle fade-in">
+                <span data-lang="pt">Como nos diferenciamos dos sistemas existentes</span>
+                <span data-lang="en">How we differentiate from existing systems</span>
+            </p>
             
             <div class="comparison-grid">
                 <div class="comparison-side old fade-in">
-                    <h3 class="comparison-title">❌ Sistemas Tradicionais</h3>
+                    <h3 class="comparison-title">
+                        <span data-lang="pt">❌ Sistemas Tradicionais</span>
+                        <span data-lang="en">❌ Traditional Systems</span>
+                    </h3>
                     
                     <div class="comparison-item">
                         <span class="comparison-icon">📊</span>
                         <div>
-                            <strong>Planilhas Excel</strong><br>
-                            Trabalho manual, curvas fixas, sem cenários
+                            <strong>
+                                <span data-lang="pt">Planilhas Excel</span>
+                                <span data-lang="en">Excel Spreadsheets</span>
+                            </strong><br>
+                            <span data-lang="pt">Trabalho manual, curvas fixas, sem cenários</span>
+                            <span data-lang="en">Manual work, fixed curves, no scenarios</span>
                         </div>
                     </div>
                     
                     <div class="comparison-item">
                         <span class="comparison-icon">📈</span>
                         <div>
-                            <strong>Software SIS (Embrapa)</strong><br>
-                            Dizem "quanto", não "por quê"
+                            <strong>
+                                <span data-lang="pt">Software SIS (Embrapa)</span>
+                                <span data-lang="en">SIS Software (Embrapa)</span>
+                            </strong><br>
+                            <span data-lang="pt">Dizem "quanto", não "por quê"</span>
+                            <span data-lang="en">Tell "how much", not "why"</span>
                         </div>
                     </div>
                     
                     <div class="comparison-item">
                         <span class="comparison-icon">💼</span>
                         <div>
-                            <strong>ERPs (SAP, TOTVS)</strong><br>
-                            Lock-in caro, caixa preta
+                            <strong>
+                                <span data-lang="pt">ERPs (SAP, TOTVS)</span>
+                                <span data-lang="en">ERPs (SAP, TOTVS)</span>
+                            </strong><br>
+                            <span data-lang="pt">Lock-in caro, caixa preta</span>
+                            <span data-lang="en">Expensive lock-in, black box</span>
                         </div>
                     </div>
                     
                     <div class="comparison-item">
                         <span class="comparison-icon">⚠️</span>
                         <div>
-                            <strong>Resultado</strong><br>
-                            Decisões sem explicação, risco climático ignorado
+                            <strong>
+                                <span data-lang="pt">Resultado</span>
+                                <span data-lang="en">Result</span>
+                            </strong><br>
+                            <span data-lang="pt">Decisões sem explicação, risco climático ignorado</span>
+                            <span data-lang="en">Decisions without explanation, climate risk ignored</span>
                         </div>
                     </div>
                 </div>
@@ -615,32 +745,48 @@
                     <div class="comparison-item">
                         <span class="comparison-icon">💡</span>
                         <div>
-                            <strong>Explicabilidade Total</strong><br>
-                            Identifica limitações (água, luz, solo)
+                            <strong>
+                                <span data-lang="pt">Explicabilidade Total</span>
+                                <span data-lang="en">Total Explainability</span>
+                            </strong><br>
+                            <span data-lang="pt">Identifica limitações (água, luz, solo)</span>
+                            <span data-lang="en">Identifies limitations (water, light, soil)</span>
                         </div>
                     </div>
                     
                     <div class="comparison-item">
                         <span class="comparison-icon">🌦️</span>
                         <div>
-                            <strong>Cenários Nativos</strong><br>
-                            Seco, favorável, mudança climática
+                            <strong>
+                                <span data-lang="pt">Cenários Nativos</span>
+                                <span data-lang="en">Native Scenarios</span>
+                            </strong><br>
+                            <span data-lang="pt">Seco, favorável, mudança climática</span>
+                            <span data-lang="en">Dry, favorable, climate change</span>
                         </div>
                     </div>
                     
                     <div class="comparison-item">
                         <span class="comparison-icon">🔓</span>
                         <div>
-                            <strong>Zero Lock-in</strong><br>
-                            Dados públicos, código auditável
+                            <strong>
+                                <span data-lang="pt">Zero Lock-in</span>
+                                <span data-lang="en">Zero Lock-in</span>
+                            </strong><br>
+                            <span data-lang="pt">Dados públicos, código auditável</span>
+                            <span data-lang="en">Public data, auditable code</span>
                         </div>
                     </div>
                     
                     <div class="comparison-item">
                         <span class="comparison-icon">✅</span>
                         <div>
-                            <strong>Resultado</strong><br>
-                            Decisões embasadas, risco quantificado
+                            <strong>
+                                <span data-lang="pt">Resultado</span>
+                                <span data-lang="en">Result</span>
+                            </strong><br>
+                            <span data-lang="pt">Decisões embasadas, risco quantificado</span>
+                            <span data-lang="en">Evidence-based decisions, quantified risk</span>
                         </div>
                     </div>
                 </div>
@@ -651,17 +797,22 @@
     <!-- CTA Section -->
     <section id="contato" class="cta-section">
         <div class="cta-content">
-            <h2 class="cta-title">Teste Gratuitamente</h2>
+            <h2 class="cta-title">
+                <span data-lang="pt">Teste Gratuitamente</span>
+                <span data-lang="en">Try it Free</span>
+            </h2>
             <p class="cta-text">
-                Teste sem custo para 1-2 talhões da sua empresa.<br>
-                Relatório completo em 30 dias. Zero compromisso.
+                <span data-lang="pt">Teste gratuito para 1-2 talhões da sua empresa.<br>Relatório completo em 30 dias. Zero compromisso.</span>
+                <span data-lang="en">Free trial for 1-2 stands from your company.<br>Complete report in 30 days. Zero commitment.</span>
             </p>
             <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center;">
-                <a href="mailto:contato@silvapredict.com.br" class="btn btn-primary" style="font-size: 1.2rem; padding: 1.2rem 3rem;">
-                    📧 Solicitar Teste Gratuito
+                <a href="mailto:contact@silvapredict.com" class="btn btn-primary" style="font-size: 1.2rem; padding: 1.2rem 3rem;">
+                    <span data-lang="pt">📧 Solicitar Teste Gratuito</span>
+                    <span data-lang="en">📧 Request Free Trial</span>
                 </a>
                 <p style="opacity: 0.8; font-size: 0.95rem;">
-                    Ou entre em contato: contato@silvapredict.com.br
+                    <span data-lang="pt">Ou entre em contato: contato@silvapredict.com.br</span>
+                    <span data-lang="en">Or contact us: contact@silvapredict.com</span>
                 </p>
             </div>
         </div>
@@ -671,48 +822,136 @@
     <footer>
         <div class="footer-content">
             <div class="footer-logo">SilvaPredict</div>
-            <p style="opacity: 0.8; margin-bottom: 2rem;">Predição Florestal Inteligente</p>
+            <p style="opacity: 0.8; margin-bottom: 2rem;">
+                <span data-lang="pt">Predição Florestal Inteligente</span>
+                <span data-lang="en">Forest Prediction Intelligence</span>
+            </p>
             
             <div class="footer-links">
-                <a href="#solucao">Solução</a>
-                <a href="#vantagens">Vantagens</a>
-                <a href="#comparacao">Comparação</a>
-                <a href="mailto:contato@silvapredict.com.br">Contato</a>
+                <a href="#solucao">
+                    <span data-lang="pt">Solução</span>
+                    <span data-lang="en">Solution</span>
+                </a>
+                <a href="#vantagens">
+                    <span data-lang="pt">Vantagens</span>
+                    <span data-lang="en">Advantages</span>
+                </a>
+                <a href="#comparacao">
+                    <span data-lang="pt">Comparação</span>
+                    <span data-lang="en">Comparison</span>
+                </a>
+                <a href="mailto:contact@silvapredict.com">
+                    <span data-lang="pt">Contato</span>
+                    <span data-lang="en">Contact</span>
+                </a>
             </div>
             
             <div class="copyright">
-                © 2025 SilvaPredict. Todos os direitos reservados.<br>
+                © 2025 SilvaPredict. 
+                <span data-lang="pt">Todos os direitos reservados.</span>
+                <span data-lang="en">All rights reserved.</span>
+                <br>
                 silvapredict.com.br | silvapredict.com
             </div>
         </div>
     </footer>
 
-    <!-- Scroll Animation Script -->
+    <!-- Bilingual Script -->
     <script>
-        // Scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
+        // Detect language based on domain
+        function detectLanguage() {
+            const hostname = window.location.hostname;
+            // .com.br = Portuguese, .com = English
+            if (hostname.includes('.com.br')) {
+                return 'pt';
+            }
+            return 'en';
+        }
         
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
+        // Set language
+        function setLanguage(lang) {
+            // Update HTML lang attribute
+            document.getElementById('html-root').setAttribute('lang', lang === 'pt' ? 'pt-BR' : 'en');
+            
+            // Update page title and meta
+            if (lang === 'pt') {
+                document.title = 'SilvaPredict - Predição Florestal Inteligente';
+                document.querySelector('meta[name="description"]').setAttribute('content', 
+                    'Plataforma de predição florestal baseada em modelo fisiológico 3-PG. Explicável, precisa e independente.');
+            } else {
+                document.title = 'SilvaPredict - Forest Prediction Intelligence';
+                document.querySelector('meta[name="description"]').setAttribute('content', 
+                    'Forest prediction platform based on physiological 3-PG model. Explainable, accurate and independent.');
+            }
+            
+            // Hide all language elements
+            document.querySelectorAll('[data-lang]').forEach(el => {
+                el.classList.remove('active');
             });
-        }, observerOptions);
+            document.querySelectorAll('[data-lang-block]').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Show selected language elements
+            document.querySelectorAll(`[data-lang="${lang}"]`).forEach(el => {
+                el.classList.add('active');
+            });
+            document.querySelectorAll(`[data-lang-block="${lang}"]`).forEach(el => {
+                el.classList.add('active');
+            });
+            
+            // Update button states
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`btn-${lang}`).classList.add('active');
+            
+            // Update comparison badge
+            const badge = document.querySelector('.comparison-side.new::before, .comparison-side.new');
+            if (badge) {
+                const style = document.createElement('style');
+                style.textContent = lang === 'pt' 
+                    ? '.comparison-side.new::before { content: "⭐ RECOMENDADO"; }'
+                    : '.comparison-side.new::before { content: "⭐ RECOMMENDED"; }';
+                document.head.appendChild(style);
+            }
+            
+            // Store preference
+            localStorage.setItem('preferredLanguage', lang);
+        }
         
-        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-        
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Check for stored preference first
+            const stored = localStorage.getItem('preferredLanguage');
+            const lang = stored || detectLanguage();
+            setLanguage(lang);
+            
+            // Initialize scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+            
+            // Smooth scroll
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
             });
         });
     </script>
