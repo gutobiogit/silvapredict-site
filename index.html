@@ -1,1021 +1,715 @@
 <!DOCTYPE html>
-<html lang="pt-BR" id="html-root">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SilvaPredict - Forest Prediction Intelligence</title>
-    <meta name="description" content="Forest prediction platform based on physiological 3-PG model. Explainable, accurate and independent.">
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        :root {
-            --forest-dark: #1B4332;
-            --forest-medium: #2D6A4F;
-            --forest-light: #52B788;
-            --accent-gold: #D4AF37;
-            --background: #FAFDF9;
-            --text-dark: #1A1A1A;
-            --text-light: #4A4A4A;
-            --cream: #F8F6F1;
-        }
-        
-        body {
-            font-family: 'IBM Plex Sans', -apple-system, sans-serif;
-            color: var(--text-dark);
-            background: var(--background);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-        
-        /* Logo Styles */
-        .logo-img {
-            background: transparent;
-        }
-        
-        .nav-logo-container {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-        
-        .nav-logo-img {
-            height: 50px;
-            width: auto;
-        }
-        
-        .hero-logo-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .hero-logo-img {
-            height: clamp(100px, 15vw, 180px);
-            width: auto;
-            animation: fadeInUp 1s ease-out;
-        }
-        
-        .footer-logo-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .footer-logo-img {
-            height: 100px;
-            width: auto;
-        }
-        
-        /* Language Switcher */
-        .lang-switcher {
-            position: fixed;
-            top: 80px;
-            right: 2rem;
-            z-index: 999;
-            display: flex;
-            gap: 0.5rem;
-            background: white;
-            padding: 0.5rem;
-            border-radius: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .lang-btn {
-            padding: 0.5rem 1rem;
-            border: none;
-            background: transparent;
-            color: var(--text-light);
-            cursor: pointer;
-            border-radius: 20px;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        
-        .lang-btn.active {
-            background: var(--forest-dark);
-            color: white;
-        }
-        
-        .lang-btn:hover:not(.active) {
-            background: var(--cream);
-        }
-        
-        /* Animated Background */
-        .hero {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1B4332 0%, #2D6A4F 50%, #40916C 100%);
-            overflow: hidden;
-        }
-        
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(82, 183, 136, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
-            animation: pulse 8s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            padding: 2rem;
-            max-width: 1200px;
-            animation: fadeInUp 1s ease-out;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: 900;
-            color: white;
-            letter-spacing: -0.02em;
-            margin: 0;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-        
-        .logo span {
-            color: var(--accent-gold);
-        }
-        
-        .tagline {
-            font-size: clamp(1.2rem, 3vw, 1.8rem);
-            color: rgba(255,255,255,0.95);
-            font-weight: 300;
-            margin-bottom: 3rem;
-            margin-top: 1rem;
-            letter-spacing: 0.02em;
-        }
-        
-        .cta-buttons {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            padding: 1rem 2.5rem;
-            font-size: 1.1rem;
-            font-weight: 500;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .btn-primary {
-            background: var(--accent-gold);
-            color: var(--forest-dark);
-            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 30px rgba(212, 175, 55, 0.6);
-        }
-        
-        .btn-secondary {
-            background: transparent;
-            color: white;
-            border: 2px solid white;
-        }
-        
-        .btn-secondary:hover {
-            background: white;
-            color: var(--forest-dark);
-        }
-        
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(27, 67, 50, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-        }
-        
-        .nav-logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: white;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 400;
-            transition: color 0.3s;
-        }
-        
-        .nav-links a:hover {
-            color: var(--accent-gold);
-        }
-        
-        /* Sections */
-        section {
-            padding: 6rem 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 700;
-            color: var(--forest-dark);
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-        
-        .section-subtitle {
-            font-size: 1.3rem;
-            color: var(--text-light);
-            text-align: center;
-            margin-bottom: 4rem;
-            font-weight: 300;
-        }
-        
-        /* Features Grid */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2.5rem;
-            margin-top: 4rem;
-        }
-        
-        .feature-card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 30px rgba(0,0,0,0.08);
-            transition: all 0.4s ease;
-            border: 1px solid rgba(82, 183, 136, 0.1);
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(82, 183, 136, 0.15);
-        }
-        
-        .feature-icon {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            display: block;
-        }
-        
-        .feature-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--forest-dark);
-            margin-bottom: 1rem;
-        }
-        
-        .feature-description {
-            color: var(--text-light);
-            line-height: 1.8;
-        }
-        
-        /* Comparison Section */
-        .comparison {
-            background: var(--cream);
-            padding: 6rem 2rem;
-        }
-        
-        .comparison-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            margin-top: 3rem;
-        }
-        
-        .comparison-side {
-            background: white;
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.06);
-        }
-        
-        .comparison-side.old {
-            border: 3px solid #E57373;
-        }
-        
-        .comparison-side.new {
-            border: 3px solid var(--forest-light);
-            position: relative;
-        }
-        
-        .comparison-side.new::before {
-            position: absolute;
-            top: -15px;
-            right: 20px;
-            background: var(--accent-gold);
-            color: var(--forest-dark);
-            padding: 0.5rem 1.5rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        
-        .comparison-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            color: var(--forest-dark);
-        }
-        
-        .comparison-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            border-radius: 8px;
-            background: rgba(0,0,0,0.02);
-        }
-        
-        .comparison-icon {
-            font-size: 1.5rem;
-            min-width: 30px;
-        }
-        
-        /* Stats */
-        .stats {
-            background: var(--forest-dark);
-            color: white;
-            padding: 5rem 2rem;
-            text-align: center;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
-            max-width: 1200px;
-            margin: 3rem auto 0;
-        }
-        
-        .stat-item {
-            padding: 2rem;
-        }
-        
-        .stat-number {
-            font-family: 'Playfair Display', serif;
-            font-size: 4rem;
-            font-weight: 900;
-            color: var(--accent-gold);
-            margin-bottom: 0.5rem;
-        }
-        
-        .stat-label {
-            font-size: 1.2rem;
-            color: rgba(255,255,255,0.9);
-            font-weight: 300;
-        }
-        
-        /* CTA Section */
-        .cta-section {
-            background: linear-gradient(135deg, var(--forest-medium) 0%, var(--forest-dark) 100%);
-            color: white;
-            padding: 6rem 2rem;
-            text-align: center;
-        }
-        
-        .cta-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .cta-title {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
-            margin-bottom: 1.5rem;
-        }
-        
-        .cta-text {
-            font-size: 1.3rem;
-            margin-bottom: 2.5rem;
-            opacity: 0.95;
-            font-weight: 300;
-        }
-        
-        /* Footer */
-        footer {
-            background: var(--forest-dark);
-            color: white;
-            padding: 4rem 2rem 2rem;
-            text-align: center;
-        }
-        
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .footer-logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0;
-        }
-        
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin: 2rem 0;
-            flex-wrap: wrap;
-        }
-        
-        .footer-links a {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .footer-links a:hover {
-            color: var(--accent-gold);
-        }
-        
-        .copyright {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.6);
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .comparison-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .lang-switcher {
-                top: 70px;
-                right: 1rem;
-            }
-            
-            .hero-logo-container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .nav-logo-img {
-                height: 35px;
-            }
-        }
-        
-        /* Scroll animations */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-        
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* Hide content by default */
-        [data-lang] {
-            display: none;
-        }
-        
-        [data-lang].active {
-            display: inline;
-        }
-        
-        [data-lang-block] {
-            display: none;
-        }
-        
-        [data-lang-block].active {
-            display: block;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SilvaPredict — Inteligência Florestal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:   #F5F0E8;
+  --warm:    #EDE5D4;
+  --bark:    #3D2B1F;
+  --moss:    #3A5A40;
+  --leaf:    #52784A;
+  --sage:    #7A9E6F;
+  --light-g: #C8DDB8;
+  --soil:    #8B6347;
+  --gold:    #C49A3C;
+  --muted:   #7A6E62;
+  --white:   #FDFAF5;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--cream);
+  color: var(--bark);
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.2rem 4rem;
+  background: rgba(245,240,232,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(61,43,31,0.08);
+}
+.nav-logo { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; }
+.nav-logo img { height: 34px; }
+.nav-logo-name {
+  font-family: 'Lora', serif; font-size: 1.2rem; font-weight: 600;
+  color: var(--bark); letter-spacing: -0.01em;
+}
+.nav-logo-name span { color: var(--moss); }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a {
+  font-size: 0.82rem; color: var(--muted); text-decoration: none;
+  font-weight: 400; transition: color 0.25s;
+}
+.nav-links a:hover { color: var(--moss); }
+.nav-right { display: flex; align-items: center; gap: 1rem; }
+.lbtn {
+  background: none; border: none; font-family: 'Inter', sans-serif;
+  font-size: 0.75rem; color: var(--muted); cursor: pointer;
+  padding: 0.25rem 0.5rem; border-radius: 3px; transition: all 0.2s;
+}
+.lbtn.on { color: var(--moss); font-weight: 500; }
+.nav-cta {
+  padding: 0.6rem 1.4rem;
+  background: var(--moss); color: var(--white);
+  font-size: 0.8rem; font-weight: 500;
+  text-decoration: none; border-radius: 4px;
+  transition: background 0.25s;
+}
+.nav-cta:hover { background: var(--bark); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: grid; grid-template-columns: 1fr 1fr;
+  padding-top: 72px;
+}
+.hero-left {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 6rem 5rem 6rem 8rem;
+  background: var(--cream);
+}
+.hero-eyebrow {
+  font-size: 0.72rem; font-weight: 500; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--sage);
+  margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 0.7rem;
+}
+.hero-eyebrow::before {
+  content: ''; display: block; width: 20px; height: 1px; background: var(--sage);
+}
+.hero-h1 {
+  font-family: 'Lora', serif;
+  font-size: clamp(3rem, 4.5vw, 5.2rem);
+  font-weight: 400; line-height: 1.12;
+  letter-spacing: -0.02em; color: var(--bark);
+  margin-bottom: 1.8rem;
+}
+.hero-h1 em { font-style: italic; color: var(--moss); }
+.hero-p {
+  font-size: 1.05rem; color: var(--muted);
+  line-height: 1.85; max-width: 440px;
+  font-weight: 300; margin-bottom: 2.5rem;
+}
+.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+.btn-primary {
+  padding: 0.9rem 2rem; background: var(--moss); color: var(--white);
+  font-size: 0.85rem; font-weight: 500; text-decoration: none;
+  border-radius: 4px; transition: all 0.25s; border: none; cursor: pointer;
+}
+.btn-primary:hover { background: var(--bark); transform: translateY(-1px); }
+.btn-outline {
+  padding: 0.9rem 2rem; background: transparent;
+  color: var(--bark); font-size: 0.85rem; font-weight: 400;
+  text-decoration: none; border-radius: 4px;
+  border: 1px solid rgba(61,43,31,0.25); transition: all 0.25s;
+}
+.btn-outline:hover { border-color: var(--moss); color: var(--moss); }
+
+.hero-right {
+  position: relative; overflow: hidden;
+  background: var(--moss);
+}
+/* SVG forest illustration */
+.hero-illustration {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+
+/* ── STATS STRIP ── */
+.stats-strip {
+  background: var(--bark);
+  display: grid; grid-template-columns: repeat(4, 1fr);
+}
+.stat-item {
+  padding: 2.8rem 3rem;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  text-align: center;
+}
+.stat-item:last-child { border-right: none; }
+.stat-n {
+  font-family: 'Lora', serif; font-size: 3rem; font-weight: 400;
+  color: var(--light-g); line-height: 1; margin-bottom: 0.4rem;
+}
+.stat-n span { font-size: 1.4rem; color: var(--gold); }
+.stat-l {
+  font-size: 0.72rem; color: rgba(255,255,255,0.5);
+  letter-spacing: 0.08em; line-height: 1.6;
+}
+
+/* ── SECTION BASE ── */
+.section { padding: 7rem 8rem; max-width: 1400px; margin: 0 auto; }
+.section-sm { padding: 5rem 8rem; max-width: 1400px; margin: 0 auto; }
+.eyebrow {
+  font-size: 0.7rem; font-weight: 500; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--sage);
+  margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.7rem;
+}
+.eyebrow::before { content: ''; width: 16px; height: 1px; background: var(--sage); }
+.h2 {
+  font-family: 'Lora', serif;
+  font-size: clamp(2.2rem, 4vw, 3.8rem);
+  font-weight: 400; line-height: 1.15; letter-spacing: -0.02em;
+  margin-bottom: 1.2rem;
+}
+.h2 em { font-style: italic; color: var(--moss); }
+.lead { font-size: 1rem; color: var(--muted); line-height: 1.85; max-width: 540px; font-weight: 300; }
+
+/* ── PROBLEM ── */
+.problem-bg { background: var(--warm); }
+.problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 4rem; }
+.problem-card {
+  background: var(--cream); padding: 2.8rem;
+  transition: background 0.3s;
+}
+.problem-card:hover { background: var(--white); }
+.problem-icon { font-size: 2rem; margin-bottom: 1.5rem; display: block; }
+.problem-title { font-family: 'Lora', serif; font-size: 1.2rem; font-weight: 500; margin-bottom: 0.8rem; }
+.problem-text { font-size: 0.85rem; color: var(--muted); line-height: 1.8; }
+.problem-label {
+  display: inline-block; margin-top: 1.2rem; font-size: 0.68rem;
+  font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--soil); background: rgba(139,99,71,0.08);
+  padding: 0.3rem 0.7rem; border-radius: 2px;
+}
+
+/* ── SOLUTION SPLIT ── */
+.solution-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8rem; align-items: start; }
+.feature-list { display: flex; flex-direction: column; gap: 0; margin-top: 2.5rem; }
+.feature-item {
+  display: flex; gap: 1.5rem; padding: 1.6rem 0;
+  border-bottom: 1px solid rgba(61,43,31,0.08);
+  align-items: flex-start;
+}
+.fi-icon { font-size: 1.3rem; min-width: 24px; margin-top: 2px; }
+.fi-title { font-size: 0.9rem; font-weight: 500; margin-bottom: 0.3rem; color: var(--bark); }
+.fi-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.75; }
+
+/* The live card */
+.live-card {
+  background: var(--white);
+  border: 1px solid rgba(61,43,31,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(61,43,31,0.1);
+}
+.lc-header {
+  background: var(--bark); padding: 1.2rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.lc-title { font-size: 0.7rem; color: rgba(255,255,255,0.6); letter-spacing: 0.08em; }
+.lc-badge {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.62rem; color: var(--light-g);
+}
+.lc-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--light-g); animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+.lc-kpis { display: grid; grid-template-columns: repeat(3,1fr); border-bottom: 1px solid rgba(61,43,31,0.06); }
+.lc-kpi { padding: 1.2rem; border-right: 1px solid rgba(61,43,31,0.06); }
+.lc-kpi:last-child { border-right: none; }
+.lc-kl { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.3rem; }
+.lc-kv { font-family: 'Lora', serif; font-size: 1.5rem; font-weight: 400; }
+.lc-ks { font-size: 0.62rem; color: var(--muted); margin-top: 0.15rem; }
+.g { color: var(--moss); } .a { color: var(--gold); }
+.lc-chart { padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(61,43,31,0.06); }
+.lc-chart-label { font-size: 0.62rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.8rem; }
+.chart-bars { display: flex; align-items: flex-end; gap: 4px; height: 56px; }
+.bar { flex: 1; border-radius: 2px 2px 0 0; background: var(--light-g); opacity: 0.5; }
+.bar.ok { opacity: 0.8; } .bar.hi { background: var(--moss); opacity: 1; } .bar.w { background: var(--gold); opacity: 0.9; }
+.lc-alerts {}
+.lc-alert { display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem 1.5rem; border-bottom: 1px solid rgba(61,43,31,0.05); font-size: 0.72rem; }
+.lc-alert:last-child { border-bottom: none; }
+.la-ok { color: var(--moss); } .la-warn { color: var(--gold); }
+.la-txt { color: var(--muted); flex: 1; }
+.la-code { font-size: 0.6rem; background: rgba(61,43,31,0.05); color: var(--muted); padding: 0.15rem 0.45rem; border-radius: 2px; }
+
+/* ── MONITORING ── */
+.mon-bg { background: var(--moss); }
+.mon-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; margin-top: 4rem; }
+.mon-card { background: rgba(255,255,255,0.06); padding: 2.8rem; border-top: 2px solid transparent; }
+.mon-card.ok-c { border-top-color: var(--light-g); }
+.mon-card.wa-c { border-top-color: var(--gold); }
+.mon-card.er-c { border-top-color: #E07050; }
+.mon-sym { font-size: 2.2rem; margin-bottom: 1rem; display: block; }
+.mon-code { font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 0.8rem; }
+.mon-h { font-family: 'Lora', serif; font-size: 1.2rem; font-weight: 400; color: var(--white); margin-bottom: 0.6rem; }
+.mon-p { font-size: 0.82rem; color: rgba(255,255,255,0.55); line-height: 1.75; }
+
+/* ── PIPELINE ── */
+.pipe-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 0; margin-top: 5rem; position: relative; }
+.pipe-grid::before {
+  content: ''; position: absolute; top: 22px; left: 5%; right: 5%; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(61,43,31,0.12) 15%, rgba(61,43,31,0.12) 85%, transparent);
+}
+.pipe-step { padding: 0 1.5rem; text-align: center; }
+.pipe-circle {
+  width: 46px; height: 46px; border: 1px solid var(--moss); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Lora', serif; font-size: 1.1rem; font-weight: 400; color: var(--moss);
+  margin: 0 auto 1.5rem; background: var(--cream);
+  position: relative; z-index: 2; transition: all 0.3s;
+}
+.pipe-step:hover .pipe-circle { background: var(--moss); color: var(--white); }
+.pipe-h { font-size: 0.82rem; font-weight: 500; margin-bottom: 0.4rem; color: var(--bark); }
+.pipe-p { font-size: 0.73rem; color: var(--muted); line-height: 1.7; }
+.pipe-tag { font-size: 0.62rem; color: var(--sage); margin-top: 0.4rem; }
+
+/* ── COMPARISON ── */
+.comp-bg { background: var(--warm); }
+.comp-table { width: 100%; border-collapse: collapse; margin-top: 4rem; background: var(--white); border-radius: 6px; overflow: hidden; box-shadow: 0 2px 20px rgba(61,43,31,0.06); }
+.comp-table th { text-align: left; padding: 1rem 1.4rem; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); background: var(--warm); border-bottom: 1px solid rgba(61,43,31,0.08); }
+.comp-table th.sp-h { color: var(--moss); background: rgba(58,90,64,0.06); border-left: 1px solid rgba(58,90,64,0.12); }
+.comp-table td { padding: 1rem 1.4rem; font-size: 0.83rem; color: var(--muted); border-bottom: 1px solid rgba(61,43,31,0.05); vertical-align: middle; }
+.comp-table td.crit { color: var(--bark); font-weight: 500; }
+.comp-table td.sp-col { background: rgba(58,90,64,0.04); color: var(--moss); font-weight: 400; border-left: 1px solid rgba(58,90,64,0.08); }
+.comp-table tr:last-child td { border-bottom: none; }
+.ck { color: var(--moss); } .cx { color: var(--soil); } .ch { color: var(--gold); }
+
+/* ── CTA ── */
+.cta-bg {
+  background: var(--bark);
+  text-align: center;
+}
+.cta-inner { max-width: 680px; margin: 0 auto; padding: 8rem 3rem; }
+.cta-h { font-family: 'Lora', serif; font-size: clamp(2.5rem,5vw,4.5rem); font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; color: var(--white); margin-bottom: 1.5rem; }
+.cta-h em { font-style: italic; color: var(--light-g); }
+.cta-p { font-size: 1rem; color: rgba(255,255,255,0.55); line-height: 1.85; margin-bottom: 2.5rem; }
+.cta-note { font-size: 0.75rem; color: rgba(255,255,255,0.35); margin-top: 1rem; }
+.cta-note a { color: var(--light-g); text-decoration: none; }
+.cta-chips { display: flex; gap: 1.5rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap; }
+.chip { font-size: 0.72rem; color: rgba(255,255,255,0.4); display: flex; align-items: center; gap: 0.4rem; }
+.chip::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--light-g); flex-shrink:0; }
+
+/* ── FOOTER ── */
+footer { background: var(--bark); border-top: 1px solid rgba(255,255,255,0.06); padding: 2.5rem 8rem; display: flex; align-items: center; justify-content: space-between; }
+.footer-name { font-family: 'Lora', serif; font-size: 1rem; font-weight: 400; color: rgba(255,255,255,0.35); }
+.footer-name span { color: rgba(255,255,255,0.55); }
+.footer-copy { font-size: 0.68rem; color: rgba(255,255,255,0.25); letter-spacing: 0.06em; text-align: center; line-height: 1.8; }
+.footer-links { display: flex; gap: 2rem; list-style: none; }
+.footer-links a { font-size: 0.7rem; color: rgba(255,255,255,0.3); text-decoration: none; transition: color 0.2s; letter-spacing: 0.08em; }
+.footer-links a:hover { color: var(--light-g); }
+
+/* ── REVEAL ── */
+.rv { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.rv.in { opacity: 1; transform: none; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){
+  nav{padding:1.1rem 2rem;} .nav-links{display:none;}
+  .hero{grid-template-columns:1fr;} .hero-right{min-height:40vh;}
+  .hero-left{padding:4rem 2rem;}
+  .section,.section-sm{padding:5rem 2rem;}
+  .stats-strip{grid-template-columns:1fr 1fr;} .stat-item:nth-child(2){border-right:none;}
+  .solution-split{grid-template-columns:1fr;gap:3rem;}
+  .problem-grid,.mon-grid{grid-template-columns:1fr;}
+  .problem-card,.mon-card{border-right:none;border-bottom:2px solid rgba(61,43,31,0.06);}
+  .pipe-grid{grid-template-columns:1fr 1fr;row-gap:2rem;} .pipe-grid::before{display:none;}
+  footer{flex-direction:column;gap:1.5rem;padding:2.5rem 2rem;text-align:center;}
+}
+</style>
 </head>
 <body>
-    <!-- Language Switcher -->
-    <div class="lang-switcher">
-        <button class="lang-btn" onclick="setLanguage('pt')" id="btn-pt">🇧🇷 PT</button>
-        <button class="lang-btn" onclick="setLanguage('en')" id="btn-en">🇺🇸 EN</button>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="./logo-nav.png" alt="SilvaPredict" style="height:38px;width:auto;">
+    <span class="nav-logo-name">Silva<span>Predict</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#solucao" class="pt">Solução</a><a href="#solucao" class="en" style="display:none">Solution</a></li>
+    <li><a href="#monitoramento" class="pt">Monitoramento</a><a href="#monitoramento" class="en" style="display:none">Monitoring</a></li>
+    <li><a href="#pipeline">Pipeline</a></li>
+    <li><a href="#comparacao" class="pt">Comparação</a><a href="#comparacao" class="en" style="display:none">Comparison</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="lbtn on" id="btn-pt" onclick="setLang('pt')">PT</button>
+    <button class="lbtn" id="btn-en" onclick="setLang('en')">EN</button>
+    <a href="#contato" class="nav-cta pt">Piloto Gratuito</a>
+    <a href="#contato" class="nav-cta en" style="display:none">Free Pilot</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div style="margin-bottom:2.5rem;">
+      <div style="font-family:'Lora',serif;font-size:2.2rem;font-weight:600;color:var(--bark);letter-spacing:-0.02em;line-height:1;">Silva<span style="color:var(--moss);">Predict</span></div>
+      <div style="font-size:0.65rem;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--sage);margin-top:0.5rem;">Forest Growth Intelligence</div>
     </div>
+    <h1 class="hero-h1">
+      <span class="pt">Entenda o que <em>limita</em><br>o crescimento<br>da sua floresta.</span>
+      <span class="en" style="display:none">Understand what <em>limits</em><br>your forest's<br>growth.</span>
+    </h1>
+    <p class="hero-p pt">Modelo ecofisiológico 3-PG calibrado para cada talhão. Monitoramento mensal automático. Alertas quando algo muda.</p>
+    <p class="hero-p en" style="display:none">Ecophysiological 3-PG model calibrated for each stand. Automatic monthly monitoring. Alerts when something changes.</p>
+    <div class="hero-actions">
+      <a href="#contato" class="btn-primary pt">Solicitar Piloto Gratuito</a>
+      <a href="#contato" class="btn-primary en" style="display:none">Request Free Pilot</a>
+      <a href="#solucao" class="btn-outline pt">Como funciona</a>
+      <a href="#solucao" class="btn-outline en" style="display:none">How it works</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <!-- Forest SVG illustration -->
+    <svg viewBox="0 0 600 700" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;position:absolute;inset:0;">
+      <!-- Sky gradient -->
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#2D4A2D"/>
+          <stop offset="100%" stop-color="#3A5A40"/>
+        </linearGradient>
+        <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#2A3D22"/>
+          <stop offset="100%" stop-color="#1A2B18"/>
+        </linearGradient>
+        <linearGradient id="treeDark" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1A3020"/>
+          <stop offset="100%" stop-color="#0F1E13"/>
+        </linearGradient>
+        <linearGradient id="treeMid" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#2D5235"/>
+          <stop offset="100%" stop-color="#1E3823"/>
+        </linearGradient>
+        <linearGradient id="treeLight" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#4A7A50"/>
+          <stop offset="100%" stop-color="#2D5235"/>
+        </linearGradient>
+        <radialGradient id="moonGlow" cx="50%" cy="50%">
+          <stop offset="0%" stop-color="rgba(200,221,184,0.18)"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+        <filter id="soft">
+          <feGaussianBlur stdDeviation="1.5"/>
+        </filter>
+      </defs>
 
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-logo-container">
-            <img src="./logo-color.png" alt="SilvaPredict Logo" class="nav-logo-img">
-            <div class="nav-logo">Silva<span style="color: var(--accent-gold);">Predict</span></div>
+      <!-- Background -->
+      <rect width="600" height="700" fill="url(#sky)"/>
+
+      <!-- Moon glow -->
+      <circle cx="480" cy="90" r="120" fill="url(#moonGlow)"/>
+      <!-- Moon -->
+      <circle cx="480" cy="90" r="28" fill="rgba(200,221,184,0.15)" stroke="rgba(200,221,184,0.25)" stroke-width="1"/>
+      <circle cx="480" cy="90" r="20" fill="rgba(200,221,184,0.2)"/>
+
+      <!-- Stars -->
+      <g fill="rgba(200,221,184,0.5)">
+        <circle cx="60" cy="50" r="1.2"/><circle cx="150" cy="30" r="1"/><circle cx="220" cy="70" r="1.3"/>
+        <circle cx="310" cy="25" r="0.9"/><circle cx="390" cy="55" r="1.1"/><circle cx="530" cy="140" r="1"/>
+        <circle cx="100" cy="110" r="0.8"/><circle cx="340" cy="90" r="1.2"/><circle cx="430" cy="35" r="0.9"/>
+        <circle cx="550" cy="200" r="1"/><circle cx="40" cy="160" r="1.1"/><circle cx="260" cy="45" r="0.7"/>
+      </g>
+
+      <!-- Ground -->
+      <rect x="0" y="580" width="600" height="120" fill="url(#ground)"/>
+      <!-- Ground highlight -->
+      <ellipse cx="300" cy="580" rx="320" ry="12" fill="rgba(74,122,80,0.25)"/>
+
+      <!-- Far trees (dark, background) -->
+      <!-- Row of small background trees -->
+      <g fill="url(#treeDark)" opacity="0.7">
+        <polygon points="20,420 50,300 80,420"/>
+        <polygon points="60,430 95,295 130,430"/>
+        <polygon points="110,425 148,290 186,425"/>
+        <polygon points="160,435 200,285 240,435"/>
+        <polygon points="360,435 400,280 440,435"/>
+        <polygon points="410,425 452,295 494,425"/>
+        <polygon points="470,430 510,290 550,430"/>
+        <polygon points="520,440 558,305 596,440"/>
+      </g>
+
+      <!-- Mid trees -->
+      <g fill="url(#treeMid)">
+        <polygon points="-10,500 35,360 80,500"/>
+        <polygon points="50,510 100,355 150,510"/>
+        <polygon points="130,505 185,345 240,505"/>
+        <polygon points="350,505 408,340 466,505"/>
+        <polygon points="440,510 495,350 550,510"/>
+        <polygon points="510,500 565,358 620,500"/>
+      </g>
+      <!-- Mid tree trunks -->
+      <g fill="rgba(20,35,22,0.8)" >
+        <rect x="33" y="500" width="5" height="80"/>
+        <rect x="98" y="510" width="5" height="72"/>
+        <rect x="183" y="505" width="5" height="77"/>
+        <rect x="405" y="505" width="5" height="77"/>
+        <rect x="492" y="510" width="5" height="72"/>
+        <rect x="562" y="500" width="5" height="80"/>
+      </g>
+
+      <!-- Foreground trees (main, lighter) -->
+      <g fill="url(#treeLight)">
+        <polygon points="180,580 240,390 300,580"/>
+        <polygon points="300,580 365,370 430,580"/>
+      </g>
+      <g fill="url(#treeMid)">
+        <polygon points="195,580 245,440 295,580"/>
+        <polygon points="310,580 368,420 426,580"/>
+      </g>
+      <!-- Foreground trunks -->
+      <rect x="237" y="580" width="7" height="40" fill="rgba(15,30,20,0.9)"/>
+      <rect x="362" y="580" width="7" height="40" fill="rgba(15,30,20,0.9)"/>
+
+      <!-- Mist / atmosphere layer -->
+      <rect x="0" y="540" width="600" height="60" fill="rgba(45,82,53,0.35)" filter="url(#soft)"/>
+
+      <!-- Data overlay - subtle -->
+      <g font-family="monospace" font-size="9" fill="rgba(200,221,184,0.45)">
+        <text x="22" y="200">ERA5 · 2026-01</text>
+        <text x="22" y="216">T_avg: 22.4°C</text>
+        <text x="22" y="232">precip: 148mm</text>
+
+        <text x="430" y="200">LAI: 5.8 m²/m²</text>
+        <text x="430" y="216">Sentinel-2</text>
+        <text x="430" y="232">10m · QA ✓</text>
+      </g>
+
+      <!-- Central data card -->
+      <rect x="195" y="155" width="210" height="130" rx="4" fill="rgba(10,20,13,0.75)" stroke="rgba(200,221,184,0.2)" stroke-width="1"/>
+      <text x="215" y="180" font-family="monospace" font-size="8" fill="rgba(200,221,184,0.5)" letter-spacing="1">BOTUCATU-T1 C1</text>
+      <line x1="215" y1="186" x2="385" y2="186" stroke="rgba(200,221,184,0.1)" stroke-width="0.5"/>
+      <text x="215" y="202" font-family="serif" font-size="22" font-weight="300" fill="rgba(200,221,184,0.9)">37</text>
+      <text x="248" y="202" font-family="monospace" font-size="9" fill="rgba(200,221,184,0.45)"> m³/ha</text>
+      <text x="215" y="216" font-family="monospace" font-size="8" fill="rgba(200,221,184,0.4)">volume atual · calibrado</text>
+      <line x1="215" y1="224" x2="385" y2="224" stroke="rgba(200,221,184,0.06)" stroke-width="0.5"/>
+      <text x="215" y="239" font-family="monospace" font-size="8" fill="rgba(200,221,184,0.4)">MAI  10.07  m³/ha/ano</text>
+      <text x="215" y="253" font-family="monospace" font-size="8" fill="rgba(200,221,184,0.4)">rot.  6.0   anos</text>
+      <text x="215" y="267" font-family="monospace" font-size="8" fill="rgba(200,221,184,0.55)">▸ colheita em ~27 meses</text>
+
+      <!-- Ground cover -->
+      <ellipse cx="100" cy="590" rx="80" ry="15" fill="rgba(40,65,35,0.5)"/>
+      <ellipse cx="300" cy="600" rx="120" ry="18" fill="rgba(35,58,30,0.6)"/>
+      <ellipse cx="490" cy="592" rx="90" ry="14" fill="rgba(40,65,35,0.5)"/>
+    </svg>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip rv">
+  <div class="stat-item"><div class="stat-n" data-target="62">0<span>m³/ha</span></div><div class="stat-l pt">Volume projetado na colheita<br>rotação fisiológica: 6 anos</div><div class="stat-l en" style="display:none">Projected harvest volume<br>physiological rotation: 6 years</div></div>
+  <div class="stat-item"><div class="stat-n" data-target="100">0<span>%</span></div><div class="stat-l pt">Dados 100% públicos<br>zero dependência comercial</div><div class="stat-l en" style="display:none">100% public data<br>zero commercial dependency</div></div>
+  <div class="stat-item"><div class="stat-n" data-target="30">0<span>+</span></div><div class="stat-l pt">Anos de validação científica<br>do modelo 3-PG</div><div class="stat-l en" style="display:none">Years of scientific validation<br>of 3-PG model</div></div>
+  <div class="stat-item"><div class="stat-n" data-target="3">0</div><div class="stat-l pt">Fatores de stress quantificados<br>hídrico · VPD · temperatura</div><div class="stat-l en" style="display:none">Stress factors quantified<br>water · VPD · temperature</div></div>
+</div>
+
+<!-- PROBLEM -->
+<div class="problem-bg">
+  <div class="section">
+    <div class="rv">
+      <div class="eyebrow pt">O Problema</div><div class="eyebrow en" style="display:none">The Problem</div>
+      <h2 class="h2 pt">Os sistemas atuais dizem <em>quanto</em> —<br>mas não <em>por quê</em>.</h2>
+      <h2 class="h2 en" style="display:none">Current systems say <em>how much</em> —<br>but not <em>why</em>.</h2>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card rv">
+        <span class="problem-icon">📊</span>
+        <div class="problem-title">Planilhas Excel</div>
+        <div class="problem-text pt">Curvas históricas fixas, trabalho manual e sem possibilidade de simular cenários climáticos ou entender causas de variação.</div>
+        <div class="problem-text en" style="display:none">Fixed historical curves, manual work and no ability to simulate climate scenarios or understand variation causes.</div>
+        <span class="problem-label pt">sem explicabilidade</span><span class="problem-label en" style="display:none">no explainability</span>
+      </div>
+      <div class="problem-card rv">
+        <span class="problem-icon">📈</span>
+        <div class="problem-title">Software SIS / Embrapa</div>
+        <div class="problem-text pt">Modelos empíricos que informam "quanto" será produzido — mas não "por quê cresceu menos". Cenários climáticos limitados.</div>
+        <div class="problem-text en" style="display:none">Empirical models that say "how much" will be produced — but not "why it grew less". Limited climate scenarios.</div>
+        <span class="problem-label pt">caixa preta</span><span class="problem-label en" style="display:none">black box</span>
+      </div>
+      <div class="problem-card rv">
+        <span class="problem-icon">💼</span>
+        <div class="problem-title pt">ERPs Corporativos</div>
+        <div class="problem-title en" style="display:none">Corporate ERPs</div>
+        <div class="problem-text pt">SAP, TOTVS — altos custos de licença, módulos florestais genéricos e dependência comercial de longo prazo.</div>
+        <div class="problem-text en" style="display:none">SAP, TOTVS — high license costs, generic forestry modules and long-term commercial dependency.</div>
+        <span class="problem-label pt">lock-in caro</span><span class="problem-label en" style="display:none">expensive lock-in</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SOLUTION -->
+<div id="solucao">
+  <div class="section">
+    <div class="solution-split">
+      <div class="rv">
+        <div class="eyebrow pt">Nossa Solução</div><div class="eyebrow en" style="display:none">Our Solution</div>
+        <h2 class="h2 pt">Modelo <em>ecofisiológico</em><br>que explica o crescimento.</h2>
+        <h2 class="h2 en" style="display:none"><em>Ecophysiological</em> model<br>that explains growth.</h2>
+        <p class="lead pt">O 3-PG simula mês a mês como clima, solo e fisiologia interagem para produzir ou limitar o crescimento. Calibrado automaticamente para cada talhão via Sentinel-2.</p>
+        <p class="lead en" style="display:none">The 3-PG model simulates month by month how climate, soil and physiology interact to produce or limit growth. Automatically calibrated per stand via Sentinel-2.</p>
+        <div class="feature-list">
+          <div class="feature-item"><span class="fi-icon">💧</span><div><div class="fi-title pt">Stress Hídrico Quantificado</div><div class="fi-title en" style="display:none">Quantified Water Stress</div><div class="fi-desc pt">Balanço hídrico calibrado com dados reais de solo. Identifica quando e quanto o déficit hídrico limitou o crescimento.</div><div class="fi-desc en" style="display:none">Water balance calibrated with real soil data. Identifies when and how much water deficit limited growth.</div></div></div>
+          <div class="feature-item"><span class="fi-icon">🌡️</span><div><div class="fi-title pt">Stress por VPD e Temperatura</div><div class="fi-title en" style="display:none">VPD and Temperature Stress</div><div class="fi-desc pt">Decomposição fisiológica em três componentes independentes. Causa dominante identificada por período.</div><div class="fi-desc en" style="display:none">Physiological decomposition into three independent components. Dominant cause identified per period.</div></div></div>
+          <div class="feature-item"><span class="fi-icon">🌦️</span><div><div class="fi-title pt">Cenários Climáticos Nativos</div><div class="fi-title en" style="display:none">Native Climate Scenarios</div><div class="fi-desc pt">Normal · Seca −20% · Seca −40%. Simule o impacto antes de decidir espaçamento ou prazo de colheita.</div><div class="fi-desc en" style="display:none">Normal · Drought −20% · −40%. Simulate impact before deciding spacing or harvest timing.</div></div></div>
+          <div class="feature-item"><span class="fi-icon">🛰️</span><div><div class="fi-title pt">Calibração Automática por Talhão</div><div class="fi-title en" style="display:none">Automatic Per-Stand Calibration</div><div class="fi-desc pt">Calibração automática usando dados reais de satélite. O modelo aprende as características específicas do seu talhão.</div><div class="fi-desc en" style="display:none">Automatic calibration using real satellite data. The model learns the specific characteristics of your stand.</div></div></div>
         </div>
-        <ul class="nav-links">
-            <li><a href="#solucao"><span data-lang="pt">Solução</span><span data-lang="en">Solution</span></a></li>
-            <li><a href="#vantagens"><span data-lang="pt">Vantagens</span><span data-lang="en">Advantages</span></a></li>
-            <li><a href="#comparacao"><span data-lang="pt">Comparação</span><span data-lang="en">Comparison</span></a></li>
-            <li><a href="#contato"><span data-lang="pt">Contato</span><span data-lang="en">Contact</span></a></li>
-        </ul>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <div class="hero-logo-container">
-                <img src="./logo-color.png" alt="SilvaPredict Logo" class="hero-logo-img">
-                <h1 class="logo">Silva<span>Predict</span></h1>
+      </div>
+      <div class="rv">
+        <div class="live-card">
+          <div class="lc-header">
+            <span class="lc-title">BOTUCATU-T1 C1 · E. urograndis · 3.67 anos</span>
+            <span class="lc-badge"><span class="lc-dot"></span> ao vivo</span>
+          </div>
+          <div class="lc-kpis">
+            <div class="lc-kpi"><div class="lc-kl pt">Volume Atual</div><div class="lc-kl en" style="display:none">Current Volume</div><div class="lc-kv g">37 <small style="font-size:.85rem;color:var(--muted)">m³/ha</small></div><div class="lc-ks pt">modelo calibrado</div><div class="lc-ks en" style="display:none">calibrated model</div></div>
+            <div class="lc-kpi"><div class="lc-kl">MAI</div><div class="lc-kv g">10.07</div><div class="lc-ks">+2.3% vs. esperado</div></div>
+            <div class="lc-kpi"><div class="lc-kl pt">Colheita</div><div class="lc-kl en" style="display:none">Harvest</div><div class="lc-kv a">~27 <small style="font-size:.85rem;color:var(--muted)">meses</small></div><div class="lc-ks">rot: 6.0 anos</div></div>
+          </div>
+          <div class="lc-chart">
+            <div class="lc-chart-label pt">Stress fisiológico — últimos 12 meses</div>
+            <div class="lc-chart-label en" style="display:none">Physiological stress — last 12 months</div>
+            <div class="chart-bars">
+              <div class="bar w" style="height:74%"></div><div class="bar w" style="height:77%"></div><div class="bar w" style="height:79%"></div>
+              <div class="bar ok" style="height:83%"></div><div class="bar ok" style="height:84%"></div><div class="bar ok" style="height:86%"></div>
+              <div class="bar hi" style="height:87%"></div><div class="bar hi" style="height:86%"></div><div class="bar hi" style="height:88%"></div>
+              <div class="bar hi" style="height:88%"></div><div class="bar hi" style="height:90%"></div><div class="bar hi" style="height:90%"></div>
             </div>
-            <p class="tagline">
-                <span data-lang="pt">Predição Florestal Inteligente</span>
-                <span data-lang="en">Forest Prediction Intelligence</span>
-            </p>
-            <p style="color: rgba(255,255,255,0.9); font-size: 1.2rem; margin-bottom: 2rem; max-width: 700px; margin-left: auto; margin-right: auto;">
-                <span data-lang="pt">Entenda o quê limita o crescimento da sua floresta e simule cenários climáticos</span>
-                <span data-lang="en">Understand what limits your forest's growth and simulate climate scenarios.</span>
-            </p>
-            <div class="cta-buttons">
-                <a href="#contato" class="btn btn-primary">
-                    <span data-lang="pt">Teste Gratuito</span>
-                    <span data-lang="en">Free Trial</span>
-                </a>
-                <a href="#solucao" class="btn btn-secondary">
-                    <span data-lang="pt">Saiba Mais</span>
-                    <span data-lang="en">Learn More</span>
-                </a>
-            </div>
+          </div>
+          <div class="lc-alerts">
+            <div class="lc-alert"><span class="la-ok">✓</span><span class="la-txt pt">Talhão dentro dos parâmetros esperados · jan/2026</span><span class="la-txt en" style="display:none">Stand within expected parameters · Jan/2026</span><span class="la-code">OK</span></div>
+            <div class="lc-alert"><span class="la-warn">⚠</span><span class="la-txt pt">Stress hídrico elevado: mai–set/2025 · 5 meses</span><span class="la-txt en" style="display:none">Elevated water stress: May–Sep/2025 · 5 months</span><span class="la-code">A04</span></div>
+            <div class="lc-alert"><span class="la-ok">✓</span><span class="la-txt pt">Recuperação total confirmada out/2025–jan/2026</span><span class="la-txt en" style="display:none">Full recovery confirmed Oct/2025–Jan/2026</span><span class="la-code">OK</span></div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</div>
 
-    <!-- Solution Overview -->
-    <section id="solucao">
-        <h2 class="section-title fade-in">
-            <span data-lang="pt">Nossa Solução</span>
-            <span data-lang="en">Our Solution</span>
-        </h2>
-        <p class="section-subtitle fade-in">
-            <span data-lang="pt">Tecnologia que transforma dados em decisões</span>
-            <span data-lang="en">Technology that transforms data into decisions</span>
-        </p>
-        
-        <div class="features-grid">
-            <div class="feature-card fade-in">
-                <span class="feature-icon">💡</span>
-                <h3 class="feature-title">
-                    <span data-lang="pt">Explicável</span>
-                    <span data-lang="en">Explainable</span>
-                </h3>
-                <p class="feature-description">
-                    <span data-lang="pt">Mostra exatamente O QUE limita o crescimento: água, luz ou nutrientes. Não apenas prevê resultados, explica as causas.</span>
-                    <span data-lang="en">Shows exactly WHAT limits growth: water, light or nutrients. Doesn't just predict results, explains the causes.</span>
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in">
-                <span class="feature-icon">🌦️</span>
-                <h3 class="feature-title">
-                    <span data-lang="pt">Cenários Climáticos</span>
-                    <span data-lang="en">Climate Scenarios</span>
-                </h3>
-                <p class="feature-description">
-                    <span data-lang="pt">Simule clima seco, favorável e mudança climática. Responda "e se...?" antes de tomar decisões.</span>
-                    <span data-lang="en">Simulate dry, favorable climate and climate change. Answer "what if...?" before making decisions.</span>
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in">
-                <span class="feature-icon">🔓</span>
-                <h3 class="feature-title">
-                    <span data-lang="pt">Independente</span>
-                    <span data-lang="en">Independent</span>
-                </h3>
-                <p class="feature-description">
-                    <span data-lang="pt">100% dados públicos (ERA5, Sentinel, SoilGrids). Zero lock-in comercial. Código auditável.</span>
-                    <span data-lang="en">100% public data (ERA5, Sentinel, SoilGrids). Zero commercial lock-in. Auditable code.</span>
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in">
-                <span class="feature-icon">📊</span>
-                <h3 class="feature-title">
-                    <span data-lang="pt">Modelo 3-PG</span>
-                    <span data-lang="en">3-PG Model</span>
-                </h3>
-                <p class="feature-description">
-                    <span data-lang="pt">Fisiológico, não estatístico. Validado cientificamente há 30+ anos. Confiável para decisões estratégicas.</span>
-                    <span data-lang="en">Physiological, not statistical. Scientifically validated for 30+ years. Reliable for strategic decisions.</span>
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in">
-                <span class="feature-icon">⚡</span>
-                <h3 class="feature-title">
-                    <span data-lang="pt">Automatizado</span>
-                    <span data-lang="en">Automated</span>
-                </h3>
-                <p class="feature-description">
-                    <span data-lang="pt">Pipeline completo sem trabalho manual. Escala de 1 a 10.000 talhões com mesma eficiência.</span>
-                    <span data-lang="en">Complete pipeline without manual work. Scales from 1 to 10,000 stands with same efficiency.</span>
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in">
-                <span class="feature-icon">🎯</span>
-                <h3 class="feature-title">
-                    <span data-lang="pt">Resultados Práticos</span>
-                    <span data-lang="en">Practical Results</span>
-                </h3>
-                <p class="feature-description">
-                    <span data-lang="pt">Relatórios executivos, dashboards interativos e dados exportáveis. Pronto para usar em 2-3 semanas.</span>
-                    <span data-lang="en">Executive reports, interactive dashboards and exportable data. Ready to use in 2-3 weeks.</span>
-                </p>
-            </div>
-        </div>
-    </section>
+<!-- MONITORING -->
+<div class="mon-bg" id="monitoramento">
+  <div class="section">
+    <div class="rv">
+      <div class="eyebrow" style="color:rgba(200,221,184,0.6)"><span style="background:rgba(200,221,184,0.3);display:block;width:16px;height:1px;"></span><span class="pt">Monitoramento Contínuo</span><span class="en" style="display:none">Continuous Monitoring</span></div>
+      <h2 class="h2" style="color:var(--white)"><span class="pt">Quase nenhuma empresa florestal faz isso <em>hoje.</em></span><span class="en" style="display:none">Almost no forestry company does this <em>today.</em></span></h2>
+      <p class="lead" style="color:rgba(255,255,255,0.5)"><span class="pt">Relatório automático todo mês. Compara o crescimento real com o esperado pelo modelo. Alertas quando algo sai do padrão.</span><span class="en" style="display:none">Automatic report every month. Compares real growth with model expectations. Alerts when something deviates.</span></p>
+    </div>
+    <div class="mon-grid">
+      <div class="mon-card ok-c rv"><span class="mon-sym">✅</span><div class="mon-code">A00 · STATUS OK</div><div class="mon-h pt">Talhão dentro da curva</div><div class="mon-h en" style="display:none">Stand within curve</div><div class="mon-p pt">Volume e MAI dentro da banda esperada. Stress acima de 0.85. Nenhuma ação necessária no campo.</div><div class="mon-p en" style="display:none">Volume and MAI within expected band. Stress above 0.85. No field action needed.</div></div>
+      <div class="mon-card wa-c rv"><span class="mon-sym">⚠️</span><div class="mon-code">A03 · ATENÇÃO</div><div class="mon-h pt">Stress elevado — 1 mês</div><div class="mon-h en" style="display:none">Elevated stress — 1 month</div><div class="mon-p pt">Stress total abaixo de 0.60. Fator dominante identificado. Monitorar o próximo período.</div><div class="mon-p en" style="display:none">Total stress below 0.60. Dominant factor identified. Monitor next period.</div></div>
+      <div class="mon-card er-c rv"><span class="mon-sym">🔴</span><div class="mon-code">A04 · CRÍTICO</div><div class="mon-h pt">Stress acumulado — 2+ meses</div><div class="mon-h en" style="display:none">Accumulated stress — 2+ months</div><div class="mon-p pt">Dois ou mais meses com stress abaixo de 0.60. Impacto confirmado no volume. Verificar campo.</div><div class="mon-p en" style="display:none">Two or more months with stress below 0.60. Confirmed volume impact. Check field.</div></div>
+    </div>
+  </div>
+</div>
 
-    <!-- Stats -->
-    <section class="stats" id="vantagens">
-        <h2 style="font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 1rem;">
-            <span data-lang="pt">Por que SilvaPredict?</span>
-            <span data-lang="en">Why SilvaPredict?</span>
-        </h2>
-        <div class="stats-grid">
-            <div class="stat-item fade-in">
-                <div class="stat-number">-60%</div>
-                <div class="stat-label">
-                    <span data-lang="pt">Custo vs. sistemas tradicionais</span>
-                    <span data-lang="en">Cost vs. traditional systems</span>
-                </div>
-            </div>
-            <div class="stat-item fade-in">
-                <div class="stat-number">100%</div>
-                <div class="stat-label">
-                    <span data-lang="pt">Dados públicos • Zero dependência</span>
-                    <span data-lang="en">Public data • Zero dependency</span>
-                </div>
-            </div>
-            <div class="stat-item fade-in">
-                <div class="stat-number">30+</div>
-                <div class="stat-label">
-                    <span data-lang="pt">Anos de validação científica do 3-PG</span>
-                    <span data-lang="en">Years of 3-PG scientific validation</span>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- PIPELINE -->
+<div id="pipeline">
+  <div class="section">
+    <div class="rv">
+      <div class="eyebrow pt">Como Funciona</div><div class="eyebrow en" style="display:none">How It Works</div>
+      <h2 class="h2 pt">Do polígono ao relatório<br><em>em 2–3 semanas</em>.</h2>
+      <h2 class="h2 en" style="display:none">From polygon to report<br><em>in 2–3 weeks</em>.</h2>
+    </div>
+    <div class="pipe-grid">
+      <div class="pipe-step rv"><div class="pipe-circle">1</div><div class="pipe-h pt">Dados do Cliente</div><div class="pipe-h en" style="display:none">Client Data</div><div class="pipe-p pt">Polígono, data de plantio, espécie e inventário de campo (DAP, altura, volume)</div><div class="pipe-p en" style="display:none">Polygon, planting date, species and field inventory (DBH, height, volume)</div><div class="pipe-tag">GeoJSON · CSV</div></div>
+      <div class="pipe-step rv"><div class="pipe-circle">2</div><div class="pipe-h pt">Ingestão Automática</div><div class="pipe-h en" style="display:none">Auto Ingestion</div><div class="pipe-p pt">ERA5 + INMET + Sentinel-2 LAI + SoilGrids ISRIC v2 — zero trabalho manual</div><div class="pipe-p en" style="display:none">ERA5 + INMET + Sentinel-2 LAI + SoilGrids ISRIC v2 — zero manual work</div><div class="pipe-tag pt">100% automático</div><div class="pipe-tag en" style="display:none">100% automated</div></div>
+      <div class="pipe-step rv"><div class="pipe-circle">3</div><div class="pipe-h pt">Calibração 3-PG</div><div class="pipe-h en" style="display:none">3-PG Calibration</div><div class="pipe-p pt">Calibração automática por talhão usando dados reais de satélite</div><div class="pipe-p en" style="display:none">Automatic calibration per stand using real satellite data</div><div class="pipe-tag">Calibração automática</div></div>
+      <div class="pipe-step rv"><div class="pipe-circle">4</div><div class="pipe-h pt">Cenários + Previsão</div><div class="pipe-h en" style="display:none">Scenarios + Forecast</div><div class="pipe-p pt">Normal · Seca −20% · −40% · Projeção 24 meses por climatologia histórica</div><div class="pipe-p en" style="display:none">Normal · Drought −20% · −40% · 24-month projection by historical climatology</div><div class="pipe-tag">76 colunas · CSV</div></div>
+      <div class="pipe-step rv"><div class="pipe-circle">5</div><div class="pipe-h pt">Relatório Mensal</div><div class="pipe-h en" style="display:none">Monthly Report</div><div class="pipe-p pt">HTML interativo com KPIs, gráficos, alertas e recomendações de manejo — todo mês</div><div class="pipe-p en" style="display:none">Interactive HTML with KPIs, charts, alerts and management recommendations — every month</div><div class="pipe-tag pt">todo mês</div><div class="pipe-tag en" style="display:none">every month</div></div>
+    </div>
+  </div>
+</div>
 
-    <!-- Comparison -->
-    <section id="comparacao" class="comparison">
-        <div class="comparison-container">
-            <h2 class="section-title fade-in">
-                <span data-lang="pt">Comparação Direta</span>
-                <span data-lang="en">Direct Comparison</span>
-            </h2>
-            <p class="section-subtitle fade-in">
-                <span data-lang="pt">Como nos diferenciamos dos sistemas existentes</span>
-                <span data-lang="en">How we differentiate from existing systems</span>
-            </p>
-            
-            <div class="comparison-grid">
-                <div class="comparison-side old fade-in">
-                    <h3 class="comparison-title">
-                        <span data-lang="pt">❌ Sistemas Tradicionais</span>
-                        <span data-lang="en">❌ Traditional Systems</span>
-                    </h3>
-                    
-                    <div class="comparison-item">
-                        <span class="comparison-icon">📊</span>
-                        <div>
-                            <strong>
-                                <span data-lang="pt">Planilhas Excel</span>
-                                <span data-lang="en">Excel Spreadsheets</span>
-                            </strong><br>
-                            <span data-lang="pt">Trabalho manual, curvas fixas, sem cenários</span>
-                            <span data-lang="en">Manual work, fixed curves, no scenarios</span>
-                        </div>
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <span class="comparison-icon">📈</span>
-                        <div>
-                            <strong>
-                                <span data-lang="pt">Software SIS (Embrapa)</span>
-                                <span data-lang="en">SIS Software (Embrapa)</span>
-                            </strong><br>
-                            <span data-lang="pt">Dizem "quanto", não "por quê"</span>
-                            <span data-lang="en">Tell "how much", not "why"</span>
-                        </div>
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <span class="comparison-icon">💼</span>
-                        <div>
-                            <strong>
-                                <span data-lang="pt">ERPs (SAP, TOTVS)</span>
-                                <span data-lang="en">ERPs (SAP, TOTVS)</span>
-                            </strong><br>
-                            <span data-lang="pt">Lock-in caro, caixa preta</span>
-                            <span data-lang="en">Expensive lock-in, black box</span>
-                        </div>
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <span class="comparison-icon">⚠️</span>
-                        <div>
-                            <strong>
-                                <span data-lang="pt">Resultado</span>
-                                <span data-lang="en">Result</span>
-                            </strong><br>
-                            <span data-lang="pt">Decisões sem explicação, risco climático ignorado</span>
-                            <span data-lang="en">Decisions without explanation, climate risk ignored</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="comparison-side new fade-in">
-                    <h3 class="comparison-title">✅ SilvaPredict</h3>
-                    
-                    <div class="comparison-item">
-                        <span class="comparison-icon">💡</span>
-                        <div>
-                            <strong>
-                                <span data-lang="pt">Explicabilidade Total</span>
-                                <span data-lang="en">Total Explainability</span>
-                            </strong><br>
-                            <span data-lang="pt">Identifica limitações (água, luz, solo)</span>
-                            <span data-lang="en">Identifies limitations (water, light, soil)</span>
-                        </div>
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <span class="comparison-icon">🌦️</span>
-                        <div>
-                            <strong>
-                                <span data-lang="pt">Cenários Nativos</span>
-                                <span data-lang="en">Native Scenarios</span>
-                            </strong><br>
-                            <span data-lang="pt">Seco, favorável, mudança climática</span>
-                            <span data-lang="en">Dry, favorable, climate change</span>
-                        </div>
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <span class="comparison-icon">🔓</span>
-                        <div>
-                            <strong>
-                                <span data-lang="pt">Zero Lock-in</span>
-                                <span data-lang="en">Zero Lock-in</span>
-                            </strong><br>
-                            <span data-lang="pt">Dados públicos, código auditável</span>
-                            <span data-lang="en">Public data, auditable code</span>
-                        </div>
-                    </div>
-                    
-                    <div class="comparison-item">
-                        <span class="comparison-icon">✅</span>
-                        <div>
-                            <strong>
-                                <span data-lang="pt">Resultado</span>
-                                <span data-lang="en">Result</span>
-                            </strong><br>
-                            <span data-lang="pt">Decisões embasadas, risco quantificado</span>
-                            <span data-lang="en">Evidence-based decisions, quantified risk</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- COMPARISON -->
+<div class="comp-bg" id="comparacao">
+  <div class="section">
+    <div class="rv">
+      <div class="eyebrow pt">Comparação Direta</div><div class="eyebrow en" style="display:none">Direct Comparison</div>
+      <h2 class="h2 pt">SilvaPredict <em>vs.</em> sistemas tradicionais.</h2>
+      <h2 class="h2 en" style="display:none">SilvaPredict <em>vs.</em> traditional systems.</h2>
+    </div>
+    <table class="comp-table rv">
+      <thead><tr>
+        <th style="width:22%"><span class="pt">Critério</span><span class="en" style="display:none">Criterion</span></th>
+        <th>Excel</th><th>SIS / Embrapa</th><th>ERP (SAP/TOTVS)</th>
+        <th class="sp-h">SilvaPredict</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="crit pt">Explicabilidade</td><td class="crit en" style="display:none">Explainability</td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td class="sp-col"><span class="ck">✓</span> <span class="pt">Completa — por fator</span><span class="en" style="display:none">Complete — by factor</span></td></tr>
+        <tr><td class="crit pt">Cenários Climáticos</td><td class="crit en" style="display:none">Climate Scenarios</td><td><span class="cx">✗</span></td><td><span class="ch">◐</span></td><td><span class="cx">✗</span></td><td class="sp-col"><span class="ck">✓</span> <span class="pt">Nativo — seca, VPD</span><span class="en" style="display:none">Native — drought, VPD</span></td></tr>
+        <tr><td class="crit pt">Monitoramento Mensal</td><td class="crit en" style="display:none">Monthly Monitoring</td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td><span class="cx">✗</span></td><td class="sp-col"><span class="ck">✓</span> <span class="pt">Alertas automáticos</span><span class="en" style="display:none">Automatic alerts</span></td></tr>
+        <tr><td class="crit pt">Dados Públicos</td><td class="crit en" style="display:none">Public Data</td><td><span class="ch">◐</span></td><td><span class="ch">◐</span></td><td><span class="cx">✗</span></td><td class="sp-col"><span class="ck">✓</span> ERA5 + Sentinel + SoilGrids</td></tr>
+        <tr><td class="crit pt">Dependência Comercial</td><td class="crit en" style="display:none">Commercial Dependency</td><td><span class="ck">✓</span></td><td><span class="ch">◐</span></td><td><span class="cx">✗</span> lock-in</td><td class="sp-col"><span class="ck">✓</span> <span class="pt">Zero dependência — metodologia transparente</span><span class="en" style="display:none">Zero dependency — transparent methodology</span></td></tr>
+        <tr><td class="crit pt">Biomassa + Carbono ESG</td><td class="crit en" style="display:none">Biomass + Carbon ESG</td><td><span class="cx">✗</span></td><td><span class="ch">◐</span></td><td><span class="ch">◐</span></td><td class="sp-col"><span class="ck">✓</span> <span class="pt">CO₂e nativo por talhão</span><span class="en" style="display:none">Native CO₂e per stand</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
-    <!-- CTA Section -->
-    <section id="contato" class="cta-section">
-        <div class="cta-content">
-            <h2 class="cta-title">
-                <span data-lang="pt">Teste Gratuitamente</span>
-                <span data-lang="en">Try it Free</span>
-            </h2>
-            <p class="cta-text">
-                <span data-lang="pt">Teste gratuito para 1-2 talhões da sua empresa.<br>Relatório completo em 30 dias. Zero compromisso.</span>
-                <span data-lang="en">Free trial for 1-2 stands from your company.<br>Complete report in 30 days. Zero commitment.</span>
-            </p>
-            <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center;">
-                <a href="mailto:contact@silvapredict.com" class="btn btn-primary" style="font-size: 1.2rem; padding: 1.2rem 3rem;">
-                    <span data-lang="pt">📧 Solicitar Teste Gratuito</span>
-                    <span data-lang="en">📧 Request Free Trial</span>
-                </a>
-                <p style="opacity: 0.8; font-size: 0.95rem;">
-                    <span data-lang="pt">Ou entre em contato: contact@silvapredict.com</span>
-                    <span data-lang="en">Or contact us: contact@silvapredict.com</span>
-                </p>
-            </div>
-        </div>
-    </section>
+<!-- CTA -->
+<div class="cta-bg" id="contato">
+  <div class="cta-inner rv">
+    <div class="eyebrow" style="color:rgba(200,221,184,0.5);justify-content:center;margin-bottom:2rem"><span style="background:rgba(200,221,184,0.2);display:block;width:16px;height:1px;"></span><span class="pt">Piloto Gratuito</span><span class="en" style="display:none">Free Pilot</span></div>
+    <h2 class="cta-h"><span class="pt">Da ciência ao campo,<br><em>todo mês</em>.</span><span class="en" style="display:none">From science to field,<br><em>every month</em>.</span></h2>
+    <p class="cta-p pt">Calibramos o modelo 3-PG para o seu talhão e entregamos o primeiro relatório completo. Depois acompanhamos mensalmente — sem licenças caras ou dependência de longo prazo.</p>
+    <p class="cta-p en" style="display:none">We calibrate the 3-PG model for your stand and deliver the first complete report. Then we monitor monthly — without expensive licenses or long-term dependency.</p>
+    <a href="mailto:contato@silvapredict.com.br" class="btn-primary pt" style="font-size:.9rem;padding:1rem 2.5rem">Solicitar Piloto Gratuito</a>
+    <a href="mailto:contato@silvapredict.com.br" class="btn-primary en" style="display:none;font-size:.9rem;padding:1rem 2.5rem">Request Free Pilot</a>
+    <div class="cta-note pt">ou envie para <a href="mailto:contato@silvapredict.com.br">contato@silvapredict.com.br</a></div>
+    <div class="cta-note en" style="display:none">or email <a href="mailto:contato@silvapredict.com.br">contato@silvapredict.com.br</a></div>
+    <div class="cta-chips">
+      <div class="chip pt">Inventário de campo incluído</div><div class="chip pt">Relatório em 2–3 semanas</div><div class="chip pt">Zero compromisso</div>
+      <div class="chip en" style="display:none">Field inventory included</div><div class="chip en" style="display:none">Report in 2–3 weeks</div><div class="chip en" style="display:none">Zero commitment</div>
+    </div>
+  </div>
+</div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-logo-container">
-                <img src="./logo-color.png" alt="SilvaPredict Logo" class="footer-logo-img">
-            </div>
-            <div class="footer-logo" style="margin-top: 1rem;">SilvaPredict</div>
-            <p style="opacity: 0.8; margin-bottom: 2rem; margin-top: 1rem;">
-                <span data-lang="pt">Predição Florestal Inteligente</span>
-                <span data-lang="en">Forest Prediction Intelligence</span>
-            </p>
-            
-            <div class="footer-links">
-                <a href="#solucao">
-                    <span data-lang="pt">Solução</span>
-                    <span data-lang="en">Solution</span>
-                </a>
-                <a href="#vantagens">
-                    <span data-lang="pt">Vantagens</span>
-                    <span data-lang="en">Advantages</span>
-                </a>
-                <a href="#comparacao">
-                    <span data-lang="pt">Comparação</span>
-                    <span data-lang="en">Comparison</span>
-                </a>
-                <a href="mailto:contact@silvapredict.com">
-                    <span data-lang="pt">Contato</span>
-                    <span data-lang="en">Contact</span>
-                </a>
-            </div>
-            
-            <div class="copyright">
-                © 2025 SilvaPredict. 
-                <span data-lang="pt">Todos os direitos reservados.</span>
-                <span data-lang="en">All rights reserved.</span>
-                <br>
-                silvapredict.com.br | silvapredict.com
-            </div>
-        </div>
-    </footer>
+<!-- FOOTER -->
+<footer>
+  <div style="display:flex;align-items:center;gap:0.7rem;">
+    <img src="./logo-color.png" alt="SilvaPredict" style="height:34px;width:auto;opacity:0.6;">
+    <div class="footer-name">Silva<span>Predict</span></div>
+  </div>
+  <div class="footer-copy">© 2025 SilvaPredict · silvapredict.com.br<br>Forest Growth Intelligence</div>
+  <ul class="footer-links">
+    <li><a href="#solucao" class="pt">Solução</a><a href="#solucao" class="en" style="display:none">Solution</a></li>
+    <li><a href="#pipeline">Pipeline</a></li>
+    <li><a href="#comparacao" class="pt">Comparação</a><a href="#comparacao" class="en" style="display:none">Comparison</a></li>
+    <li><a href="mailto:contato@silvapredict.com.br">Email</a></li>
+  </ul>
+</footer>
 
-    <!-- Bilingual Script -->
-    <script>
-        // Detect language based on domain
-        function detectLanguage() {
-            const hostname = window.location.hostname;
-            // .com.br = Portuguese, .com = English
-            if (hostname.includes('.com.br')) {
-                return 'pt';
-            }
-            return 'en';
-        }
-        
-        // Set language
-        function setLanguage(lang) {
-            // Update HTML lang attribute
-            document.getElementById('html-root').setAttribute('lang', lang === 'pt' ? 'pt-BR' : 'en');
-            
-            // Update page title and meta
-            if (lang === 'pt') {
-                document.title = 'SilvaPredict - Predição Florestal Inteligente';
-                document.querySelector('meta[name="description"]').setAttribute('content', 
-                    'Plataforma de predição florestal baseada em modelo fisiológico 3-PG. Explicável, precisa e independente.');
-            } else {
-                document.title = 'SilvaPredict - Forest Prediction Intelligence';
-                document.querySelector('meta[name="description"]').setAttribute('content', 
-                    'Forest prediction platform based on physiological 3-PG model. Explainable, accurate and independent.');
-            }
-            
-            // Hide all language elements
-            document.querySelectorAll('[data-lang]').forEach(el => {
-                el.classList.remove('active');
-            });
-            document.querySelectorAll('[data-lang-block]').forEach(el => {
-                el.classList.remove('active');
-            });
-            
-            // Show selected language elements
-            document.querySelectorAll(`[data-lang="${lang}"]`).forEach(el => {
-                el.classList.add('active');
-            });
-            document.querySelectorAll(`[data-lang-block="${lang}"]`).forEach(el => {
-                el.classList.add('active');
-            });
-            
-            // Update button states
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.getElementById(`btn-${lang}`).classList.add('active');
-            
-            // Update comparison badge
-            const badge = document.querySelector('.comparison-side.new::before, .comparison-side.new');
-            if (badge) {
-                const style = document.createElement('style');
-                style.textContent = lang === 'pt' 
-                    ? '.comparison-side.new::before { content: "⭐ RECOMENDADO"; }'
-                    : '.comparison-side.new::before { content: "⭐ RECOMMENDED"; }';
-                document.head.appendChild(style);
-            }
-            
-            // Store preference
-            localStorage.setItem('preferredLanguage', lang);
-        }
-        
-        // Initialize on page load
-        window.addEventListener('DOMContentLoaded', () => {
-            // Check for stored preference first
-            const stored = localStorage.getItem('preferredLanguage');
-            const lang = stored || detectLanguage();
-            setLanguage(lang);
-            
-            // Initialize scroll animations
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -100px 0px'
-            };
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, observerOptions);
-            
-            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-            
-            // Smooth scroll
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                });
-            });
-        });
-    </script>
+<script>
+function setLang(l){
+  document.querySelectorAll('.pt,.en').forEach(el=>{
+    el.style.display='none';
+    if(el.classList.contains(l)){
+      const t=el.tagName.toLowerCase();
+      el.style.display=(t==='span'||t==='a'||t==='button')?'inline':'block';
+    }
+  });
+  document.getElementById('btn-pt').classList.toggle('on',l==='pt');
+  document.getElementById('btn-en').classList.toggle('on',l==='en');
+  localStorage.setItem('sp_lang',l);
+}
+setLang(localStorage.getItem('sp_lang')||(location.hostname.includes('.com.br')?'pt':'en'));
+
+// Reveals
+const ro=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('in'),i*80);ro.unobserve(e.target);}});},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+
+// Counters
+function animN(el,target){
+  const s=el.querySelector('span'),sh=s?s.outerHTML:'';
+  let t0=null;
+  (function step(ts){if(!t0)t0=ts;const p=Math.min((ts-t0)/1400,1);const e=1-Math.pow(1-p,3);el.innerHTML=Math.round(e*target)+sh;if(p<1)requestAnimationFrame(step);})(performance.now());
+}
+const no=new IntersectionObserver(e=>{if(e[0].isIntersecting){document.querySelectorAll('.stat-n[data-target]').forEach(el=>animN(el,+el.dataset.target));no.disconnect();}},{threshold:.3});
+const sb=document.querySelector('.stats-strip');if(sb)no.observe(sb);
+</script>
 </body>
 </html>
+
